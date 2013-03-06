@@ -4,6 +4,9 @@ gem "celluloid"
 gem "redis"
 gem "ohm"
 
-group :test do
+group :development do
   gem "rspec"
+  gem "rb-fsevent", "~> 0.9"
+  gem "guard-rspec"
+  gem "pry-nav"
 end
