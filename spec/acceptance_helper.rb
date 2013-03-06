@@ -1,3 +1,5 @@
+require "spec_helper"
+
 # Borrowing Capybara acceptance test DSL extension
 # https://github.com/jnicklas/capybara/blob/2.0.2/lib/capybara/rspec/features.rb
 
