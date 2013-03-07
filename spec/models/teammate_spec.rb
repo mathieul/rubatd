@@ -1,6 +1,10 @@
 require "spec_helper"
 
 describe Teammate do
+  it "is valid with valid attributes" do
+    expect(Teammate.new(valid_attributes)).to be_valid
+  end
+
   it "is not valid without a name" do
     teammate = Teammate.new(valid_attributes.except(:name))
     expect(teammate).not_to be_valid
