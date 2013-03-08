@@ -1,6 +1,10 @@
-class Teammate < Ohm::Model
-  attribute  :name
-  reference :team, :Team
+require "Scrivener"
+
+class Teammate
+  include Model
+  include Scrivener::Validations
+
+  attr_accessor :name
 
   def validate
     assert_present :name

@@ -1,2 +1,3 @@
-require "ohm"
-Dir.glob("#{__dir__}/rubatd/models/**/*.rb") { |file_name| require(file_name) }
+require "rubatd/model"
+require "rubatd/models/team"
+require "rubatd/models/teammate"

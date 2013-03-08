@@ -2,9 +2,10 @@ require "acceptance_helper"
 
 feature "Provisioning objects" do
   scenario "Create team, teammates and queues" do
-    advisors_team = Team.create(name: "Advisors")
-    expect(advisors_team).to be_valid
-    teammate = Teammate.create(name: "mathieu", team: advisors_team)
-    expect(teammate).to be_valid
+    store = DataStore.new(data_store_config)
+    the_advisors = Team.new(name: "Advisors")
+    store.save(the_advisors)
+    mathieu = Teammate.new(name: "mathieu", team: the_advisors)
+    store.save(mathieu)
   end
 end

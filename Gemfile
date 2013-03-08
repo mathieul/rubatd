@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "celluloid"
 gem "redis"
-gem "ohm"
+gem "scrivener"
 
 group :development do
   gem "rspec"
