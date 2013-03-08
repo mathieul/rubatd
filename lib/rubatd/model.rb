@@ -1,6 +1,9 @@
+require "scrivener"
+
 module Model
   def self.included(base)
     base.instance_eval do
+      include Scrivener::Validations
       attr_accessor :id
     end
   end
