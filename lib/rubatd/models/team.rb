@@ -1,6 +1,4 @@
-class Team
-  include Model
-
+class Team < Model
   attr_accessor :name
 
   def validate

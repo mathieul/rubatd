@@ -1,16 +1,23 @@
 require "scrivener"
 
-module Model
-  def self.included(base)
-    base.instance_eval do
-      include Scrivener::Validations
-      attr_accessor :id
-    end
-  end
+class Model
+    include Scrivener::Validations
+    attr_accessor :id
 
   def initialize(attributes = {})
-    attributes.each { |name, value| send("#{name}=", value) if respond_to?(name) }
+    attributes.each do |name, value|
+      send("#{name}=", value) if respond_to?(name)
+    end
     @id ||= generate_id
+    after_initialize(attributes)
+  end
+
+  def validate
+    assert_present :id
+    after_validate
+  end
+
+  def after_initialize(attributes)
   end
 
   private

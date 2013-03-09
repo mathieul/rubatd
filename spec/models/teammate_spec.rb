@@ -15,11 +15,10 @@ describe Teammate do
     expect(teammate).not_to be_valid
   end
 
-  it "is not valid without a team" do
-    teammate = Teammate.new(valid_attributes.except(:team))
+  it "is not valid without a team id" do
+    teammate = Teammate.new(valid_attributes.except(:team_id))
     expect(teammate).not_to be_valid
   end
 
-  let(:valid_attributes) { {name: "valid name", team: team} }
-  let(:team) { Team.new(name: "the team") }
+  let(:valid_attributes) { {name: "valid name", team_id: "123abc"} }
 end

@@ -15,11 +15,5 @@ describe Team do
     expect(team).not_to be_valid
   end
 
-  it "has a collection of teammates" do
-    team = Team.new(valid_attributes)
-    %w[one two three].each { |name| Teammate.new(name: name, team: team) }
-    expect(team).to have(3).teammates
-  end
-
   let(:valid_attributes) { {name: "valid name"} }
 end
