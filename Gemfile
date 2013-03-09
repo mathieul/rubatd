@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "celluloid"
 gem "redis"
+gem "nest"
 gem "scrivener"
 
 group :development do

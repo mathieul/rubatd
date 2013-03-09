@@ -19,6 +19,8 @@ GEM
     listen (0.7.3)
     lumberjack (1.0.2)
     method_source (0.8.1)
+    nest (1.1.2)
+      redis
     pry (0.9.12)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
@@ -47,6 +49,7 @@ PLATFORMS
 DEPENDENCIES
   celluloid
   guard-rspec
+  nest
   pry-nav
   rb-fsevent (~> 0.9)
   redis
