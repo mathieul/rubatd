@@ -12,5 +12,5 @@ describe Team do
     expect(team).not_to be_valid
   end
 
-  let(:valid_attributes) { {id: "1", name: "valid name"} }
+  let(:valid_attributes) { {name: "valid name"} }
 end

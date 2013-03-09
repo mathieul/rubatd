@@ -12,11 +12,6 @@ module Rubatd
       after_initialize(attributes)
     end
 
-    def validate
-      assert_present :id
-      after_validate
-    end
-
     def attributes
       names = instance_variables.reject { |name| name == :@id }
       names.each_with_object({}) do |name, attributes|
@@ -25,9 +20,6 @@ module Rubatd
     end
 
     def after_initialize(attributes)
-    end
-
-    def after_validate
     end
   end
 end
