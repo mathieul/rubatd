@@ -9,7 +9,6 @@ module Rubatd
       attributes.each do |name, value|
         send("#{name}=", value) if respond_to?(name)
       end
-      @id ||= generate_id
       after_initialize(attributes)
     end
 
@@ -18,13 +17,17 @@ module Rubatd
       after_validate
     end
 
+    def attributes
+      names = instance_variables.reject { |name| name == :@id }
+      names.each_with_object({}) do |name, attributes|
+        attributes[name] = instance_variable_get(name)
+      end
+    end
+
     def after_initialize(attributes)
     end
 
-    private
-
-    def generate_id
-      rand(2**64).to_s(16)
+    def after_validate
     end
   end
 end
