@@ -1,5 +1,7 @@
 require "spec_helper"
 
+include Rubatd
+
 describe Team do
   it "is valid with valid attributes" do
     expect(Team.new(valid_attributes)).to be_valid
