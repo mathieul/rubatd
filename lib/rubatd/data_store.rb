@@ -9,10 +9,9 @@ class Rubatd::DataStore
   end
 
   def create(model)
-    key = Nest.new(model.class.to_s, db)
-    model.id = key["id"].incr
-    key["all"].sadd(model.id)
-    key[model.id].hmset(*model.attributes.to_a)
+    serializer = RedisModelSerializer.new(model, db)
+    model.id = serializer.id
+    serializer.save
     true
   end
 end
