@@ -12,17 +12,17 @@ class DSModel
   end
 end
 
-class RedisDSModelSerializer
+class Rubatd::Stores::RedisDSModel < Rubatd::Stores::RedisModel
 end
 
 describe DataStore do
+  let(:store) { DataStore.new(:redis, Redis, redis_config) }
+
   it "is initialized for a database" do
-    store = DataStore.new(:redis, redis_config)
     expect(store.db).to be_a(Redis)
   end
 
   context "create a model to redis" do
-    let(:store) { DataStore.new(:redis, redis_config) }
     let(:model) { DSModel.new(name: "ze model", number: "42") }
     before(:each) { store.create(model) }
 
