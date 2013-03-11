@@ -10,10 +10,12 @@ class DSModel
   def attributes
     {"name" => name, "number" => number}
   end
+  def type_name
+    "DSModel"
+  end
 end
 
-class Rubatd::Stores::RedisDSModel < Rubatd::Stores::RedisModel
-end
+Rubatd::Stores::RedisDSModel = Class.new(Stores::RedisModel)
 
 describe DataStore do
   let(:store) { DataStore.new(:redis, Redis, redis_config) }

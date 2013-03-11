@@ -19,6 +19,10 @@ module Rubatd
       end
     end
 
+    def type_name
+      self.class.to_s.split(/::/).last
+    end
+
     def after_initialize(attributes)
     end
   end

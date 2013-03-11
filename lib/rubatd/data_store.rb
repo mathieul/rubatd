@@ -17,14 +17,9 @@ class Rubatd::DataStore
 
   def model_store(model)
     @model_stores[type] ||= begin
-      name = model_store_name(model)
+      name = "#{type.to_s.camelize}#{model.type_name}"
       klass = Rubatd::Stores.const_get(name)
       klass.new(model, db)
     end
-  end
-
-  def model_store_name(model)
-    model_name = model.class.to_s.split(/::/).last
-    "#{type.to_s.camelize}#{model_name}"
   end
 end
