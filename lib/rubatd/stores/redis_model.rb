@@ -18,6 +18,6 @@ class Rubatd::Stores::RedisModel
   end
 
   def model_key
-    @model_key ||= Nest.new(model.class.to_s, db)
+    @model_key ||= Nest.new(model.type_name, db)
   end
 end
