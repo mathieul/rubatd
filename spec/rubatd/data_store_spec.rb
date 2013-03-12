@@ -17,9 +17,8 @@ describe DataStore do
     expect(store.db).to be_a(Redis)
   end
 
-  it "#create generates a model id and saves the model" do
-    Rubatd::Accessors::RedisDSModel.any_instance.should_receive(:generate_model_id)
+  it "#save delegates to the appropriate redis accessor" do
     Rubatd::Accessors::RedisDSModel.any_instance.should_receive(:save)
-    store.create(DSModel.new)
+    store.save(DSModel.new)
   end
 end

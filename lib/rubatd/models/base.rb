@@ -23,6 +23,10 @@ module Rubatd
       self.class.to_s.split(/::/).last
     end
 
+    def persisted?
+      !id.nil?
+    end
+
     def after_initialize(attributes)
     end
   end

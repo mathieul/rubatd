@@ -7,10 +7,8 @@ class Rubatd::DataStore
     @accessors = {}
   end
 
-  def create(model)
-    store = model_store(model)
-    store.generate_model_id
-    store.save
+  def save(model)
+    model_store(model).save
   end
 
   private
