@@ -14,6 +14,8 @@ class Rubatd::Accessors::RedisBase
     store_attributes(model.id, model.attributes)
   end
 
+  private
+
   def next_id
     key["id"].incr.to_s
   end
