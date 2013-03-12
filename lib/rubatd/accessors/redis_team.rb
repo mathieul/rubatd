@@ -1,6 +1,6 @@
 module Rubatd
   module Accessors
-    class RedisTeam < RedisModel
+    class RedisTeam < RedisBase
     end
   end
 end

@@ -12,9 +12,9 @@ class RMModel
   end
 end
 
-describe Accessors::RedisModel do
+describe Accessors::RedisBase do
   let(:model) { RMModel.new }
-  let(:redis_store) { Accessors::RedisModel.new(model, Redis.new(redis_config)) }
+  let(:redis_store) { Accessors::RedisBase.new(model, Redis.new(redis_config)) }
 
   it "#generate_model_id retrieves and sets a new id from redis" do
     redis_store.generate_model_id

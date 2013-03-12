@@ -1,6 +1,6 @@
 require "nest"
 
-class Rubatd::Accessors::RedisModel
+class Rubatd::Accessors::RedisBase
   attr_reader :model, :db
 
   def initialize(model, db)
