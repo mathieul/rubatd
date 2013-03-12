@@ -2,18 +2,26 @@ require "scrivener"
 
 module Rubatd
   class Model
-      include Scrivener::Validations
-      attr_accessor :id
+    include Scrivener::Validations
+
+    attr_writer :_persisted
 
     def initialize(attributes = {})
       attributes.each do |name, value|
         send("#{name}=", value) if respond_to?(name)
       end
-      after_initialize(attributes)
+    end
+
+    def id
+      @_id
+    end
+
+    def id=(id)
+      @_id = id
     end
 
     def attributes
-      names = instance_variables.reject { |name| name == :@id }
+      names = instance_variables.reject { |name| name[1] == "_" }
       names.each_with_object({}) do |name, attributes|
         attributes[name[1..-1]] = instance_variable_get(name)
       end
@@ -24,10 +32,7 @@ module Rubatd
     end
 
     def persisted?
-      !id.nil?
-    end
-
-    def after_initialize(attributes)
+      !!@_persisted
     end
   end
 end

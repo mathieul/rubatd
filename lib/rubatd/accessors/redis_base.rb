@@ -13,7 +13,7 @@ class Rubatd::Accessors::RedisBase
   end
 
   def save
-    model.id = next_id unless model.persisted?
+    model.id ||= next_id
     push_id(model.id)
     store_attributes(model.id, attributes)
   end
