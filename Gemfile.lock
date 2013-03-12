@@ -1,12 +1,17 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    activesupport (3.2.12)
+      i18n (~> 0.6)
+      multi_json (~> 1.0)
     celluloid (0.12.4)
       facter (>= 1.6.12)
       timers (>= 1.0.0)
     coderay (1.0.9)
     diff-lcs (1.2.1)
     facter (1.6.17)
+    factory_girl (4.2.0)
+      activesupport (>= 3.0.0)
     guard (1.6.2)
       listen (>= 0.6.0)
       lumberjack (>= 1.0.2)
@@ -16,9 +21,11 @@ GEM
     guard-rspec (2.5.0)
       guard (>= 1.1)
       rspec (~> 2.11)
+    i18n (0.6.4)
     listen (0.7.3)
     lumberjack (1.0.2)
     method_source (0.8.1)
+    multi_json (1.6.1)
     nest (1.1.2)
       redis
     pry (0.9.12)
@@ -48,6 +55,7 @@ PLATFORMS
 
 DEPENDENCIES
   celluloid
+  factory_girl
   guard-rspec
   nest
   pry-nav

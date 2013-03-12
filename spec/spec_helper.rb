@@ -1,5 +1,6 @@
 require "pry"
 require "redis"
+require "factory_girl"
 
 Dir.glob("#{__dir__}/support/**/*.rb") { |file_name| require(file_name) }
 
@@ -15,7 +16,10 @@ module GlobalConfigHelpers
   end
 end
 
+FactoryGirl.find_definitions
+
 RSpec.configure do |config|
+  config.include FactoryGirl::Syntax::Methods
   config.include GlobalConfigHelpers
   config.after(:each) { redis.flushdb }
 end
