@@ -8,10 +8,14 @@ class Rubatd::Accessors::RedisBase
     @db = db
   end
 
+  def attributes
+    model.attributes
+  end
+
   def save
     model.id = next_id unless model.persisted?
     push_id(model.id)
-    store_attributes(model.id, model.attributes)
+    store_attributes(model.id, attributes)
   end
 
   private

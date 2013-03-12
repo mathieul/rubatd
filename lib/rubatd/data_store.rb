@@ -8,16 +8,16 @@ class Rubatd::DataStore
   end
 
   def save(model)
-    model_store(model).save
+    accessor = accessor_klass(model).new(model, db)
+    accessor.save
   end
 
   private
 
-  def model_store(model)
-    @accessors[type] ||= begin
+  def accessor_klass(model)
+    @accessors[model.type_name] ||= begin
       name = "#{type.to_s.camelize}#{model.type_name}"
-      klass = Rubatd::Accessors.const_get(name)
-      klass.new(model, db)
+      Rubatd::Accessors.const_get(name)
     end
   end
 end

@@ -15,7 +15,7 @@ module Rubatd
     def attributes
       names = instance_variables.reject { |name| name == :@id }
       names.each_with_object({}) do |name, attributes|
-        attributes[name] = instance_variable_get(name)
+        attributes[name[1..-1]] = instance_variable_get(name)
       end
     end
 
