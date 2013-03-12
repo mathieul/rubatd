@@ -8,7 +8,7 @@ class DSModel
   end
 end
 
-Rubatd::Stores::RedisDSModel = Struct.new(:model, :db)
+Rubatd::Accessors::RedisDSModel = Struct.new(:model, :db)
 
 describe DataStore do
   let(:store) { DataStore.new(:redis, Redis, redis_config) }
@@ -18,8 +18,8 @@ describe DataStore do
   end
 
   it "#create generates a model id and saves the model" do
-    Rubatd::Stores::RedisDSModel.any_instance.should_receive(:generate_model_id)
-    Rubatd::Stores::RedisDSModel.any_instance.should_receive(:save)
+    Rubatd::Accessors::RedisDSModel.any_instance.should_receive(:generate_model_id)
+    Rubatd::Accessors::RedisDSModel.any_instance.should_receive(:save)
     store.create(DSModel.new)
   end
 end

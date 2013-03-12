@@ -4,7 +4,7 @@ class Rubatd::DataStore
   def initialize(type, db_adapter_class, config)
     @type = type
     @db = db_adapter_class.new(config)
-    @model_stores = {}
+    @accessors = {}
   end
 
   def create(model)
@@ -16,9 +16,9 @@ class Rubatd::DataStore
   private
 
   def model_store(model)
-    @model_stores[type] ||= begin
+    @accessors[type] ||= begin
       name = "#{type.to_s.camelize}#{model.type_name}"
-      klass = Rubatd::Stores.const_get(name)
+      klass = Rubatd::Accessors.const_get(name)
       klass.new(model, db)
     end
   end

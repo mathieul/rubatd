@@ -1,5 +1,5 @@
 module Rubatd
-  module Stores
+  module Accessors
     class RedisTeam < RedisModel
     end
   end
