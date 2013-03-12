@@ -13,9 +13,12 @@ class Rubatd::Accessors::RedisBase
   end
 
   def save
+    raise ModelInvalid, model.errors unless model.valid?
     model.id ||= next_id
     push_id(model.id)
     store_attributes(model.id, attributes)
+    model.persisted!
+    model
   end
 
   private

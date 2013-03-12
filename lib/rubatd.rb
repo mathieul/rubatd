@@ -1,4 +1,5 @@
 Rubatd = Module.new
+Rubatd::Error = Class.new(StandardError)
 
 require "rubatd/core_extensions"
 require "rubatd/models"

@@ -1,3 +1,5 @@
+Rubatd::ModelInvalid = Class.new(Rubatd::Error)
+
 require "rubatd/models/base"
 require "rubatd/models/team"
 require "rubatd/models/teammate"

@@ -7,7 +7,7 @@ feature "Provisioning objects" do
     store = DataStore.new(:redis, Redis, redis_config)
     the_advisors = Team.new(name: "Advisors")
     store.save(the_advisors)
-    mathieu = Teammate.new(name: "mathieu", team_id: the_advisors.id)
+    mathieu = Teammate.new(name: "mathieu", team: the_advisors)
     store.save(mathieu)
   end
 end

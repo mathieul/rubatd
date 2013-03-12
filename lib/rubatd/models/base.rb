@@ -4,8 +4,6 @@ module Rubatd
   class Model
     include Scrivener::Validations
 
-    attr_writer :_persisted
-
     def initialize(attributes = {})
       attributes.each do |name, value|
         send("#{name}=", value) if respond_to?(name)
@@ -21,7 +19,7 @@ module Rubatd
     end
 
     def attributes
-      names = instance_variables.reject { |name| name[1] == "_" }
+      names = instance_variables.reject { |name| name == :@errors || name[1] == "_" }
       names.each_with_object({}) do |name, attributes|
         attributes[name[1..-1]] = instance_variable_get(name)
       end
@@ -33,6 +31,10 @@ module Rubatd
 
     def persisted?
       !!@_persisted
+    end
+
+    def persisted!
+      @_persisted = true
     end
   end
 end
