@@ -13,15 +13,15 @@ class Rubatd::Accessors::RedisBase
 
   def save(model)
     raise ModelInvalid, model.errors unless model.valid?
-    model.id ||= key.next_id
-    key.push_id(model.id)
-    key.store_attributes(model.id, attributes(model))
+    model.id ||= next_id
+    push_id(model.id)
+    store_attributes(model.id, attributes(model))
     model.persisted!
     model
   end
 
   def [](id)
-    attributes = key.read_attributes(id)
+    attributes = read_attributes(id)
     model_klass.new(attributes.merge("id" => id))
   end
 
@@ -34,29 +34,22 @@ class Rubatd::Accessors::RedisBase
   end
 
   def key
-    @key ||= Key.new(type_name, db)
+    @key ||= Nest.new(type_name, db)
   end
 
-  class Key
-    attr_reader :key
-    def initialize(type_name, db)
-      @key = Nest.new(type_name, db)
-    end
+  def next_id
+    key["id"].incr.to_s
+  end
 
-    def next_id
-      key["id"].incr.to_s
-    end
+  def push_id(id)
+    key["all"].sadd(id)
+  end
 
-    def push_id(id)
-      key["all"].sadd(id)
-    end
+  def store_attributes(id, attributes)
+    key[id].hmset(*attributes.to_a)
+  end
 
-    def store_attributes(id, attributes)
-      key[id].hmset(*attributes.to_a)
-    end
-
-    def read_attributes(id)
-      key[id].hgetall
-    end
+  def read_attributes(id)
+    key[id].hgetall
   end
 end
