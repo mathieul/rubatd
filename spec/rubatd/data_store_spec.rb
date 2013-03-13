@@ -22,4 +22,11 @@ describe DataStore do
     Rubatd::Accessors::RedisDSModel.any_instance.should_receive(:save).with(model)
     store.save(model)
   end
+
+  it "#find delegates to teh appropriate redis accessor" do
+    Rubatd::Accessors::RedisDSModel.any_instance
+      .should_receive(:[]).with("42").and_return(:found)
+    model = store["DSModel"]["42"]
+    expect(model).to eq(:found)
+  end
 end

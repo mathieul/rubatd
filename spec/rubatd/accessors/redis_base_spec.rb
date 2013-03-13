@@ -3,7 +3,10 @@ require "spec_helper"
 include Rubatd
 
 class RMModel
-  attr_accessor :id, :errors
+  attr_accessor :id, :errors, :params
+  def initialize(params = {})
+    @params = params
+  end
   def attributes
     {"name" => "James Bond", "number" => "007"}
   end
@@ -17,11 +20,14 @@ class RMModel
   end
 end
 
+Rubatd::Accessors::RedisRMModel = Class.new(Accessors::RedisBase)
+
 describe Accessors::RedisBase do
-  let(:model) { RMModel.new }
-  let(:accessor) { Accessors::RedisBase.new(Redis.new(redis_config)) }
+  let(:accessor) { Accessors::RedisRMModel.new(Redis.new(redis_config)) }
 
   context "#save" do
+    let(:model) { RMModel.new }
+
     it "#save raises an error if teammate is not valid" do
       model.should_receive(:valid?).and_return(false)
       expect { accessor.save(model) }.to raise_error(ModelInvalid)
@@ -55,6 +61,14 @@ describe Accessors::RedisBase do
     it "sets the model as persisted" do
       model.should_receive(:persisted!)
       accessor.save(model)
+    end
+  end
+
+  context "#[]" do
+    it "finds the model id" do
+      accessor.save(RMModel.new)
+      model = accessor["1"]
+      expect(model.params).to eq("id" => "1", "name" => "James Bond", "number" => "007")
     end
   end
 end

@@ -13,7 +13,6 @@ class Rubatd::Accessors::RedisBase
 
   def save(model)
     raise ModelInvalid, model.errors unless model.valid?
-    key = Key.new(model.type_name, db)
     model.id ||= key.next_id
     key.push_id(model.id)
     key.store_attributes(model.id, attributes(model))
@@ -21,7 +20,22 @@ class Rubatd::Accessors::RedisBase
     model
   end
 
-  private
+  def [](id)
+    attributes = key.read_attributes(id)
+    model_klass.new(attributes.merge("id" => id))
+  end
+
+  def type_name
+    self.class.to_s.split("::").last.sub(/^Redis/, '')
+  end
+
+  def model_klass
+    Rubatd.const_get(type_name)
+  end
+
+  def key
+    @key ||= Key.new(type_name, db)
+  end
 
   class Key
     attr_reader :key
@@ -39,6 +53,10 @@ class Rubatd::Accessors::RedisBase
 
     def store_attributes(id, attributes)
       key[id].hmset(*attributes.to_a)
+    end
+
+    def read_attributes(id)
+      key[id].hgetall
     end
   end
 end
