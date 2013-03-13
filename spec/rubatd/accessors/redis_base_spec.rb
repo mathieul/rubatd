@@ -3,12 +3,9 @@ require "spec_helper"
 include Rubatd
 
 class RMModel
-  attr_accessor :id, :errors, :params
-  def initialize(params = {})
-    @params = params
-  end
-  def attributes
-    {"name" => "James Bond", "number" => "007"}
+  attr_accessor :id, :errors, :attributes
+  def initialize(attributes = {})
+    @attributes = attributes
   end
   def type_name
     "RMModel"
@@ -25,8 +22,8 @@ Rubatd::Accessors::RedisRMModel = Class.new(Accessors::RedisBase)
 describe Accessors::RedisBase do
   let(:accessor) { Accessors::RedisRMModel.new(Redis.new(redis_config)) }
 
-  context "#save" do
-    let(:model) { RMModel.new }
+  context "#save: save to redis" do
+    let(:model) { RMModel.new("name" => "James Bond", "number" => "007") }
 
     it "#save raises an error if teammate is not valid" do
       model.should_receive(:valid?).and_return(false)
@@ -45,10 +42,10 @@ describe Accessors::RedisBase do
     end
 
     it "adds the model id to the list of all model ids" do
-      accessor.save(model)
-      expect(redis.smembers("RMModel:all")).to eq(["1"])
-      accessor.save(model)
-      expect(redis.smembers("RMModel:all")).to eq(["1"])
+      2.times do
+        accessor.save(model)
+        expect(redis.smembers("RMModel:all")).to eq(["1"])
+      end
     end
 
     it "stores the model attributes" do
@@ -64,15 +61,21 @@ describe Accessors::RedisBase do
     end
   end
 
-  context "#[]" do
+  context "#[]: read model from redis by id" do
     it "finds the model id" do
-      accessor.save(RMModel.new)
+      accessor.save(RMModel.new("name" => "James Bond", "number" => "007"))
       model = accessor["1"]
-      expect(model.params).to eq("id" => "1", "name" => "James Bond", "number" => "007")
+      expect(model.attributes).to eq("id" => "1", "name" => "James Bond", "number" => "007")
     end
 
     it "raises an error if no model exists for this id" do
       expect { accessor["does-not-exist"] }.to raise_error(ModelNotFound)
+    end
+  end
+
+  context "#find: query models from redis" do
+    it "finds models by attribute value" do
+
     end
   end
 end
