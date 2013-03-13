@@ -4,7 +4,7 @@ include Rubatd
 
 describe Accessors::RedisTeam do
   let(:accessor) do
-    Accessors::RedisTeam.new(build(:team), Redis.new(redis_config))
+    Accessors::RedisTeam.new(Redis.new(redis_config))
   end
 
   it "is a redis accessor" do

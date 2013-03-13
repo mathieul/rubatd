@@ -1,41 +1,44 @@
 require "nest"
 
 class Rubatd::Accessors::RedisBase
-  attr_reader :model, :db
+  attr_reader :db
 
-  def initialize(model, db)
-    @model = model
+  def initialize(db)
     @db = db
   end
 
-  def attributes
+  def attributes(model)
     model.attributes
   end
 
-  def save
+  def save(model)
     raise ModelInvalid, model.errors unless model.valid?
-    model.id ||= next_id
-    push_id(model.id)
-    store_attributes(model.id, attributes)
+    key = Key.new(model.type_name, db)
+    model.id ||= key.next_id
+    key.push_id(model.id)
+    key.store_attributes(model.id, attributes(model))
     model.persisted!
     model
   end
 
   private
 
-  def next_id
-    key["id"].incr.to_s
-  end
+  class Key
+    attr_reader :key
+    def initialize(type_name, db)
+      @key = Nest.new(type_name, db)
+    end
 
-  def push_id(id)
-    key["all"].sadd(id)
-  end
+    def next_id
+      key["id"].incr.to_s
+    end
 
-  def store_attributes(id, attributes)
-    key[id].hmset(*attributes.to_a)
-  end
+    def push_id(id)
+      key["all"].sadd(id)
+    end
 
-  def key
-    @key ||= Nest.new(model.type_name, db)
+    def store_attributes(id, attributes)
+      key[id].hmset(*attributes.to_a)
+    end
   end
 end

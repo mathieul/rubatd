@@ -18,7 +18,8 @@ describe DataStore do
   end
 
   it "#save delegates to the appropriate redis accessor" do
-    Rubatd::Accessors::RedisDSModel.any_instance.should_receive(:save)
-    store.save(DSModel.new)
+    model = DSModel.new
+    Rubatd::Accessors::RedisDSModel.any_instance.should_receive(:save).with(model)
+    store.save(model)
   end
 end

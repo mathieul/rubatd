@@ -19,34 +19,34 @@ end
 
 describe Accessors::RedisBase do
   let(:model) { RMModel.new }
-  let(:accessor) { Accessors::RedisBase.new(model, Redis.new(redis_config)) }
+  let(:accessor) { Accessors::RedisBase.new(Redis.new(redis_config)) }
 
   context "#save" do
     it "#save raises an error if teammate is not valid" do
       model.should_receive(:valid?).and_return(false)
-      expect { accessor.save }.to raise_error(ModelInvalid)
+      expect { accessor.save(model) }.to raise_error(ModelInvalid)
     end
 
     it "sets the model id if not persisted" do
-      accessor.save
+      accessor.save(model)
       expect(model.id).to eq("1")
     end
 
     it "doesn't set the model id if already set" do
       model.id = "42"
-      accessor.save
+      accessor.save(model)
       expect(model.id).to eq("42")
     end
 
     it "adds the model id to the list of all model ids" do
-      accessor.save
+      accessor.save(model)
       expect(redis.smembers("RMModel:all")).to eq(["1"])
-      accessor.save
+      accessor.save(model)
       expect(redis.smembers("RMModel:all")).to eq(["1"])
     end
 
     it "stores the model attributes" do
-      accessor.save
+      accessor.save(model)
       expect(redis.hgetall("RMModel:1")).to eq(
         "name" => "James Bond", "number" => "007"
       )
@@ -54,7 +54,7 @@ describe Accessors::RedisBase do
 
     it "sets the model as persisted" do
       model.should_receive(:persisted!)
-      accessor.save
+      accessor.save(model)
     end
   end
 end

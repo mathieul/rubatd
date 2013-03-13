@@ -5,7 +5,7 @@ include Rubatd
 describe Accessors::RedisTeammate do
   let(:teammate) { build(:teammate, name: "Georges") }
   let(:accessor) do
-    Accessors::RedisTeammate.new(teammate, Redis.new(redis_config))
+    Accessors::RedisTeammate.new(Redis.new(redis_config))
   end
 
   it "is a redis accessor" do
@@ -14,11 +14,11 @@ describe Accessors::RedisTeammate do
 
   it "#save raises an error if team is not persisted" do
     teammate.team = build(:team)
-    expect { accessor.save }.to raise_error(ModelInvalid)
+    expect { accessor.save(teammate) }.to raise_error(ModelInvalid)
   end
 
   it "#save persists the team id" do
-    accessor.save
+    accessor.save(teammate)
     expect(redis.hgetall("Teammate:1")).to eq(
       "name" => "Georges", "team_id" => "1"
     )
