@@ -26,8 +26,6 @@ class Rubatd::Accessors::RedisBase
     model_klass.new(attributes.merge("id" => id))
   end
 
-
-
   private
 
   def type_name
