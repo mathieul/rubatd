@@ -70,5 +70,9 @@ describe Accessors::RedisBase do
       model = accessor["1"]
       expect(model.params).to eq("id" => "1", "name" => "James Bond", "number" => "007")
     end
+
+    it "raises an error if no model exists for this id" do
+      expect { accessor["does-not-exist"] }.to raise_error(ModelNotFound)
+    end
   end
 end

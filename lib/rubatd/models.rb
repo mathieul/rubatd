@@ -1,4 +1,5 @@
 Rubatd::ModelInvalid = Class.new(Rubatd::Error)
+Rubatd::ModelNotFound = Class.new(Rubatd::Error)
 
 require "rubatd/models/base"
 require "rubatd/models/team"
