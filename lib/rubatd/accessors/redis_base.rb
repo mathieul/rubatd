@@ -26,6 +26,10 @@ class Rubatd::Accessors::RedisBase
     model_klass.new(attributes.merge("id" => id))
   end
 
+
+
+  private
+
   def type_name
     self.class.to_s.split("::").last.sub(/^Redis/, '')
   end

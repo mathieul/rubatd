@@ -72,10 +72,4 @@ describe Accessors::RedisBase do
       expect { accessor["does-not-exist"] }.to raise_error(ModelNotFound)
     end
   end
-
-  context "#find: query models from redis" do
-    it "finds models by attribute value" do
-
-    end
-  end
 end
