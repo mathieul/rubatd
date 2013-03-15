@@ -9,6 +9,6 @@ feature "Provisioning objects" do
     store.save(the_advisors)
     teammate = Teammate.new(name: "mathieu", team: the_advisors)
     store.save(teammate)
-    mathieu = store["Teammate"][teammate.id]
+    mathieu = store.get("Teammate", teammate.id)
   end
 end

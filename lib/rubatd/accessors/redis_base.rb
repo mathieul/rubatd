@@ -20,7 +20,7 @@ class Rubatd::Accessors::RedisBase
     model
   end
 
-  def [](id)
+  def get(id)
     attributes = read_attributes(id)
     raise ModelNotFound, "id = #{id.inspect}" if attributes.empty?
     model_klass.new(attributes.merge("id" => id))

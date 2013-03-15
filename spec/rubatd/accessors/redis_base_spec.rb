@@ -61,15 +61,15 @@ describe Accessors::RedisBase do
     end
   end
 
-  context "#[]: read model from redis by id" do
+  context "#get: read model from redis by id" do
     it "finds the model id" do
       accessor.save(RMModel.new("name" => "James Bond", "number" => "007"))
-      model = accessor["1"]
+      model = accessor.get("1")
       expect(model.attributes).to eq("id" => "1", "name" => "James Bond", "number" => "007")
     end
 
     it "raises an error if no model exists for this id" do
-      expect { accessor["does-not-exist"] }.to raise_error(ModelNotFound)
+      expect { accessor.get("does-not-exist") }.to raise_error(ModelNotFound)
     end
   end
 end
