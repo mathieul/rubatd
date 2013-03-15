@@ -8,4 +8,4 @@ module HashExtensions
   end
 end
 
-Hash.send(:include, HashExtensions)
+Hash.send(:include, HashExtensions) unless Hash.new.respond_to?(:except)
