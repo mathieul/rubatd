@@ -2,8 +2,6 @@ require "pry"
 require "redis"
 require "factory_girl"
 
-Dir.glob("#{__dir__}/support/**/*.rb") { |file_name| require(file_name) }
-
 require File.join(__dir__, "..", "lib", "rubatd")
 
 module GlobalConfigHelpers
