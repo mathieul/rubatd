@@ -93,21 +93,32 @@ describe Accessors::RedisBase do
   end
 
   context "model references" do
+    let(:movie_accessor) { accessor }
+    let(:actor_accessor) { Accessors::RedisActor.new(Redis.new(redis_config)) }
+    let(:moonraker) { Movie.new("title" => "Moonraker").tap { |m| m.id = "007" } }
+    let(:moore) do
+      Actor.new("name" => "Roger Moore").tap { |moore|
+        moore.id = "3"
+        moore.movie = moonraker
+      }
+    end
+
     it "#save a model with a reference indexes the reference id" do
-      moonraker = Movie.new.tap { |m| m.id = "007" }
-      moore = Actor.new("name" => "Roger Moore").tap { |m| m.id = "3" }
-      moore.movie = moonraker
-      accessor = Accessors::RedisActor.new(Redis.new(redis_config))
-      accessor.save(moore)
+      movie_accessor.save(moonraker)
+      actor_accessor.save(moore)
       expect(redis.smembers("Actor:indices:movie_id:007")).to eq(["3"])
     end
+
+    it "loads a model with its references"
+
+    it "raises an error if a referee is not persisted"
 
     it "#referrers reads the referrers to a model" do
       redis.sadd("Actor:indices:movie_id:007", "12")
       redis.sadd("Actor:indices:movie_id:007", "42")
       redis.hmset("Actor:12", "name", "Sean Connery")
       redis.hmset("Actor:42", "name", "Daniel Craig")
-      referrers = accessor.referrers("Actor", "007")
+      referrers = movie_accessor.referrers("Actor", "007")
       expect(referrers.length).to eq(2)
       connery, craig = referrers.sort { |a, b| a.id <=> b.id }
       expect(connery.attributes["name"]).to eq("Sean Connery")
