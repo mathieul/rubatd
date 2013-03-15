@@ -22,9 +22,6 @@ class Rubatd::DataStore
   private
 
   def accessor(model_type)
-    @accessors[model_type] ||= begin
-      name = "#{type.to_s.camelize}#{model_type}"
-      Rubatd::Accessors.const_get(name).new(db)
-    end
+    @accessors[model_type] ||= Rubatd::Accessors.for(type, db, model_type)
   end
 end

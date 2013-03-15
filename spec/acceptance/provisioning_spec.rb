@@ -9,6 +9,9 @@ feature "Provisioning objects" do
     store.save(the_advisors)
     teammate = Teammate.new(name: "mathieu", team: the_advisors)
     store.save(teammate)
+
     mathieu = store.get("Teammate", teammate.id)
+    referrers = store.fetch_referrers(the_advisors, "Teammate")
+    expect(referrers.map(&:name)).to eq([mathieu.name])
   end
 end

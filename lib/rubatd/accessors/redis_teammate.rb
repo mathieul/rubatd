@@ -1,6 +1,8 @@
 module Rubatd
   module Accessors
     class RedisTeammate < RedisBase
+      reference "Team"
+
       def attributes(model)
         attributes = model.attributes.except("team")
         attributes.merge("team_id" => model.team && model.team.id)
