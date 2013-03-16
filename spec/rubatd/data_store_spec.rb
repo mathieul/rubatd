@@ -35,7 +35,7 @@ describe DataStore do
     Rubatd::RedisAccessors::Singer.any_instance
       .should_receive(:get).with("42").and_return(:found)
 
-    model = store.get(:singer, "42")
+    model = store.get(:singer, id: "42")
 
     expect(model).to eq(:found)
   end
@@ -46,7 +46,7 @@ describe DataStore do
     Rubatd::RedisAccessors::Singer.any_instance
       .should_receive(:referrers).with("Song", "42").and_return([:found])
 
-    referrers = store.get(referee, :song)
+    referrers = store.get(referee, referrers: :song)
 
     expect(referrers).to eq([:found])
   end

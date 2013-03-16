@@ -11,13 +11,13 @@ class Rubatd::DataStore
     accessor(model.type_name).save(model)
   end
 
-  def get(subject, thing)
+  def get(subject, id: nil, referrers: nil)
     case subject
     when String, Symbol
       model_type = subject.to_s.camelize
-      accessor(model_type).get(thing)
+      accessor(model_type).get(id)
     else
-      model_type = thing.to_s.camelize
+      model_type = referrers.to_s.camelize
       fetch_referrers(subject, model_type)
     end
   end

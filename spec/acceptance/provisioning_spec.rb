@@ -10,8 +10,8 @@ feature "Provisioning objects" do
     teammate = Teammate.new(name: "mathieu", team: the_advisors)
     store.save(teammate)
 
-    mathieu = store.get(:teammate, teammate.id)
-    referrers = store.get(the_advisors, :teammate)
+    mathieu = store.get(:teammate, id: teammate.id)
+    referrers = store.get(the_advisors, referrers: :teammate)
     expect(referrers.map(&:name)).to eq([mathieu.name])
   end
 end
