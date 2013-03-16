@@ -16,15 +16,6 @@ class Rubatd::RedisAccessors::Base
     @db = db
   end
 
-  def attributes(model)
-    model.attributes.dup.tap do |attributes|
-      each_reference do |name|
-        referee = model.send(name)
-        attributes["#{name}_id"] = referee.id if referee
-      end
-    end
-  end
-
   def each_reference
     names = self.class.reference_names || []
     return names.each unless block_given?
@@ -34,14 +25,10 @@ class Rubatd::RedisAccessors::Base
   end
 
   def save(model)
-    raise ModelInvalid, model.errors unless model.valid?
-    each_reference do |name|
-      referee = model.send(name)
-      raise ModelNotSaved, name if referee && !referee.persisted?
-    end
+    assert_saveable!(model)
     model.id ||= next_id
     push_id(model.id)
-    store_attributes(model.id, attributes(model))
+    store_attributes(model.id, model_attributes(model))
     index_references(model)
     model.persisted!
     model
@@ -96,11 +83,28 @@ class Rubatd::RedisAccessors::Base
     key[id].hgetall
   end
 
+  def model_attributes(model)
+    model.attributes.dup.tap do |attributes|
+      each_reference do |name|
+        referee = attributes.delete(name)
+        attributes["#{name}_id"] = referee.id if referee
+      end
+    end
+  end
+
   def index_references(model)
     each_reference do |name|
       if (referee = model.send(name))
         key["indices"]["#{name}_id"][referee.id].sadd(model.id)
       end
+    end
+  end
+
+  def assert_saveable!(model)
+    raise ModelInvalid, model.errors unless model.valid?
+    each_reference do |name|
+      referee = model.send(name)
+      raise ModelNotSaved, name if referee && !referee.persisted?
     end
   end
 end
