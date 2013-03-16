@@ -2,38 +2,14 @@ require "spec_helper"
 
 include Rubatd
 
-class Movie
-  attr_accessor :id, :errors, :attributes
-  def initialize(attributes = {})
-    @attributes = attributes
-  end
-  def type_name
-    "Movie"
-  end
-  def valid?
-    true
-  end
-  def persisted!
-  end
+class Movie < Model
+  attr_accessor :title, :number
 end
-
 Rubatd::RedisAccessors::Movie = Class.new(RedisAccessors::Base)
 
-class Actor
-  attr_accessor :id, :attributes, :movie
-  def initialize(attributes = {})
-    @attributes = attributes
-  end
-  def type_name
-    "Actor"
-  end
-  def valid?
-    true
-  end
-  def persisted!
-  end
+class Actor < Model
+  attr_accessor :name, :movie
 end
-
 class Rubatd::RedisAccessors::Actor < RedisAccessors::Base
   reference "Movie"
 end
@@ -44,7 +20,7 @@ describe RedisAccessors::Base do
   context "#save: save to redis" do
     let(:model) { Movie.new("title" => "Goldfinger", "number" => "007") }
 
-    it "#save raises an error if teammate is not valid" do
+    it "#save raises an error if model is not valid" do
       model.should_receive(:valid?).and_return(false)
       expect { accessor.save(model) }.to raise_error(ModelInvalid)
     end
@@ -84,7 +60,7 @@ describe RedisAccessors::Base do
     it "finds the model id" do
       accessor.save(Movie.new("title" => "Goldfinger", "number" => "007"))
       model = accessor.get("1")
-      expect(model.attributes).to eq("id" => "1", "title" => "Goldfinger", "number" => "007")
+      expect(model.attributes).to eq("title" => "Goldfinger", "number" => "007")
     end
 
     it "raises an error if no model exists for this id" do
@@ -97,32 +73,34 @@ describe RedisAccessors::Base do
     let(:actor_accessor) { RedisAccessors::Actor.new(Redis.new(redis_config)) }
     let(:moonraker) { Movie.new("title" => "Moonraker").tap { |m| m.id = "007" } }
     let(:moore) do
-      Actor.new("name" => "Roger Moore").tap { |moore|
-        moore.id = "3"
-        moore.movie = moonraker
-      }
+      Actor.new("name" => "Roger Moore").tap { |moore| moore.id = "3" }
     end
 
-    it "#save a model with a reference indexes the reference id" do
+    it "indexes its references when saved" do
       movie_accessor.save(moonraker)
+      moore.movie = moonraker
       actor_accessor.save(moore)
       expect(redis.smembers("Actor:indices:movie_id:007")).to eq(["3"])
     end
 
-    it "loads a model with its references"
+    it "also load a model references with #get", wip: true do
+      movie_accessor.save(moonraker)
+      moore.movie = moonraker
+      actor_accessor.save(moore)
+      actor = actor_accessor.get(moore.id)
+      expect(actor.movie.id).to eq(moonraker.id)
+    end
 
-    it "raises an error if a referee is not persisted"
-
-    it "#referrers reads the referrers to a model" do
-      redis.sadd("Actor:indices:movie_id:007", "12")
+    it "fetches a model referrers with #referrers" do
       redis.sadd("Actor:indices:movie_id:007", "42")
-      redis.hmset("Actor:12", "name", "Sean Connery")
       redis.hmset("Actor:42", "name", "Daniel Craig")
       referrers = movie_accessor.referrers("Actor", "007")
-      expect(referrers.length).to eq(2)
-      connery, craig = referrers.sort { |a, b| a.id <=> b.id }
-      expect(connery.attributes["name"]).to eq("Sean Connery")
-      expect(craig.attributes["name"]).to eq("Daniel Craig")
+      expect(referrers.map(&:attributes)).to eq([{"name" => "Daniel Craig"}])
+    end
+
+    it "raises an error if a referee is not persisted when saving" do
+      moore.movie = moonraker
+      expect { actor_accessor.save(moore) }.to raise_error(ModelNotSaved)
     end
   end
 end
