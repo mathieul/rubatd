@@ -2,14 +2,14 @@ require "spec_helper"
 
 include Rubatd
 
-describe Accessors::RedisTeammate do
+describe RedisAccessors::Teammate do
   let(:teammate) { build(:teammate, name: "Georges") }
   let(:accessor) do
-    Accessors::RedisTeammate.new(Redis.new(redis_config))
+    RedisAccessors::Teammate.new(Redis.new(redis_config))
   end
 
   it "is a redis accessor" do
-    expect(accessor).to be_an(Accessors::RedisBase)
+    expect(accessor).to be_an(RedisAccessors::Base)
   end
 
   it "#save raises an error if team is not persisted" do

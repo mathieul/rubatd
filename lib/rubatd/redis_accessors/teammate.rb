@@ -1,6 +1,6 @@
 module Rubatd
-  module Accessors
-    class RedisTeammate < RedisBase
+  module RedisAccessors
+    class Teammate < Base
       reference "Team"
 
       def attributes(model)

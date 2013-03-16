@@ -17,7 +17,7 @@ class Movie
   end
 end
 
-Rubatd::Accessors::RedisMovie = Class.new(Accessors::RedisBase)
+Rubatd::RedisAccessors::Movie = Class.new(RedisAccessors::Base)
 
 class Actor
   attr_accessor :id, :attributes, :movie
@@ -34,12 +34,12 @@ class Actor
   end
 end
 
-class Rubatd::Accessors::RedisActor < Accessors::RedisBase
+class Rubatd::RedisAccessors::Actor < RedisAccessors::Base
   reference "Movie"
 end
 
-describe Accessors::RedisBase do
-  let(:accessor) { Accessors::RedisMovie.new(Redis.new(redis_config)) }
+describe RedisAccessors::Base do
+  let(:accessor) { RedisAccessors::Movie.new(Redis.new(redis_config)) }
 
   context "#save: save to redis" do
     let(:model) { Movie.new("title" => "Goldfinger", "number" => "007") }
@@ -94,7 +94,7 @@ describe Accessors::RedisBase do
 
   context "model references" do
     let(:movie_accessor) { accessor }
-    let(:actor_accessor) { Accessors::RedisActor.new(Redis.new(redis_config)) }
+    let(:actor_accessor) { RedisAccessors::Actor.new(Redis.new(redis_config)) }
     let(:moonraker) { Movie.new("title" => "Moonraker").tap { |m| m.id = "007" } }
     let(:moore) do
       Actor.new("name" => "Roger Moore").tap { |moore|

@@ -15,7 +15,7 @@ module DataStoreHelpers
   end
 end
 
-Rubatd::Accessors::RedisSinger = Struct.new(:model, :db)
+Rubatd::RedisAccessors::Singer = Struct.new(:model, :db)
 
 describe DataStore do
   let(:store) { DataStore.new(:redis, Redis, redis_config) }
@@ -26,12 +26,12 @@ describe DataStore do
 
   it "delegates #save to the appropriate redis accessor" do
     model = DataStoreHelpers::Singer.new
-    Rubatd::Accessors::RedisSinger.any_instance.should_receive(:save).with(model)
+    Rubatd::RedisAccessors::Singer.any_instance.should_receive(:save).with(model)
     store.save(model)
   end
 
   it "delegates #get to the appropriate redis accessor" do
-    Rubatd::Accessors::RedisSinger.any_instance
+    Rubatd::RedisAccessors::Singer.any_instance
       .should_receive(:get).with("42").and_return(:found)
     model = store.get("Singer", "42")
     expect(model).to eq(:found)
@@ -40,7 +40,7 @@ describe DataStore do
   it "delegates #fetch_referrers to the appropriate redis accessor" do
     referee = DataStoreHelpers::Singer.new
     referee.should_receive(:id).and_return("42")
-    Rubatd::Accessors::RedisSinger.any_instance
+    Rubatd::RedisAccessors::Singer.any_instance
       .should_receive(:referrers).with("Song", "42").and_return([:found])
     referrers = store.fetch_referrers(referee, "Song")
     expect(referrers).to eq([:found])

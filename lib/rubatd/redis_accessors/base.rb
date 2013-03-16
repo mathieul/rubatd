@@ -1,6 +1,6 @@
 require "nest"
 
-class Rubatd::Accessors::RedisBase
+class Rubatd::RedisAccessors::Base
   attr_reader :db
 
   class << self
@@ -39,7 +39,7 @@ class Rubatd::Accessors::RedisBase
   def referrers(referrer_type, id)
     rkey = Nest.new(referrer_type, db)
     index_key = rkey["indices"]["#{type_name}Id".underscore][id]
-    accessor = Rubatd::Accessors.for(:redis, db, referrer_type)
+    accessor = Rubatd::RedisAccessors.for(db, referrer_type)
     index_key.smembers.map { |id| accessor.get(id) }
   end
 
