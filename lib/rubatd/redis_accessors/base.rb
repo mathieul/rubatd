@@ -27,9 +27,11 @@ class Rubatd::RedisAccessors::Base
   def save(model)
     assert_saveable!(model)
     model.id ||= next_id
-    push_id(model.id)
-    store_attributes(model.id, model_attributes(model))
-    index_references(model)
+    db.multi do
+      push_id(model.id)
+      store_attributes(model.id, model_attributes(model))
+      index_references(model)
+    end
     model.persisted!
     model
   end
