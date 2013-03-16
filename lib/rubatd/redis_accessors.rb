@@ -1,6 +1,8 @@
-module Rubatd::RedisAccessors
-  def self.for(db, model_type)
-    Rubatd::RedisAccessors.const_get(model_type).new(db)
+module Rubatd
+  module RedisAccessors
+    def self.for(db, model_type)
+      const_get(model_type).new(db)
+    end
   end
 end
 

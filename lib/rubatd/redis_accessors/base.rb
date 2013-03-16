@@ -40,7 +40,7 @@ class Rubatd::RedisAccessors::Base
     each_reference do |name|
       ref_id = attributes.delete("#{name}_id")
       next unless ref_id
-      accessor = Rubatd::RedisAccessors.for(db, name.camelize)
+      accessor = RedisAccessors.for(db, name.camelize)
       attributes[name] = accessor.get(ref_id)
     end
     klass.new(attributes.merge("id" => id))
@@ -49,7 +49,7 @@ class Rubatd::RedisAccessors::Base
   def referrers(referrer_type, id)
     rkey = Nest.new(referrer_type, db)
     index_key = rkey["indices"]["#{type_name}Id".underscore][id]
-    accessor = Rubatd::RedisAccessors.for(db, referrer_type)
+    accessor = RedisAccessors.for(db, referrer_type)
     index_key.smembers.map { |id| accessor.get(id) }
   end
 

@@ -1,7 +1,9 @@
-Rubatd::ModelInvalid = Class.new(Rubatd::Error)
-Rubatd::ModelNotFound = Class.new(Rubatd::Error)
-Rubatd::ModelNotSaved = Class.new(Rubatd::Error)
+module Rubatd
+  ModelInvalid  = Class.new(Rubatd::Error)
+  ModelNotFound = Class.new(Rubatd::Error)
+  ModelNotSaved = Class.new(Rubatd::Error)
+end
 
-require "rubatd/models/base"
+require "rubatd/models/model"
 require "rubatd/models/team"
 require "rubatd/models/teammate"
