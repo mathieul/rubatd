@@ -26,7 +26,7 @@ describe RedisAccessors::Base do
       expect { movie_accessor.save(model) }.to raise_error(ModelInvalid)
     end
 
-    it "sets the model id if not persisted" do
+    it "sets the model id if not set" do
       movie_accessor.save(model)
       expect(model.id).to eq("1")
     end
@@ -38,10 +38,8 @@ describe RedisAccessors::Base do
     end
 
     it "adds the model id to the list of all model ids" do
-      2.times do
-        movie_accessor.save(model)
-        expect(redis.smembers("Movie:all")).to eq(["1"])
-      end
+      movie_accessor.save(model)
+      expect(redis.smembers("Movie:all")).to eq(["1"])
     end
 
     it "stores the model attributes" do
@@ -58,10 +56,25 @@ describe RedisAccessors::Base do
   end
 
   context "#get: read model from redis by id" do
-    it "finds the model id" do
-      movie_accessor.save(Movie.new("title" => "Goldfinger", "number" => "007"))
-      model = movie_accessor.get("1")
-      expect(model.attributes).to eq("title" => "Goldfinger", "number" => "007")
+    let(:goldfinger) { Movie.new("title" => "Goldfinger", "number" => "007") }
+    before(:each) { movie_accessor.save(goldfinger) }
+
+    it "finds the model by id" do
+      model = movie_accessor.get(goldfinger.id)
+      expect(model.id).to eq(goldfinger.id)
+    end
+
+    it "can remember the original persisted attributes" do
+      model = movie_accessor.get(goldfinger.id)
+      model.title = "Goldeneye"
+      model.number = nil
+      expect(model.attributes).to eq("title" => "Goldeneye")
+      expect(model.persisted_attributes).to eq("title" => "Goldfinger", "number" => "007")
+    end
+
+    it "return a persisted model" do
+      model = movie_accessor.get(goldfinger.id)
+      expect(model).to be_persisted
     end
 
     it "raises an error if no model exists for this id" do
@@ -81,6 +94,15 @@ describe RedisAccessors::Base do
       moore.movie = moonraker
       actor_accessor.save(moore)
       expect(redis.smembers("Actor:indices:movie_id:007")).to eq(["3"])
+    end
+
+    it "cleans-up old references when updated if they changed" do
+      movie_accessor.save(moonraker)
+      moore.movie = moonraker
+      actor_accessor.save(moore)
+      moore.movie = nil
+      actor_accessor.save(moore)
+      expect(redis.smembers("Actor:indices:movie_id:007")).to eq([])
     end
 
     it "also load a model references with #get", wip: true do
