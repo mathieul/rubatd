@@ -52,6 +52,15 @@ class Rubatd::RedisAccessors::Base
     model
   end
 
+  def remove(model)
+    db.multi do
+      cleanup_references(model)
+      remove_attributes(model.id)
+      remove_id(model.id)
+    end
+    model.not_persisted!
+  end
+
   def referrers(referrer_type, id)
     rkey = Nest.new(referrer_type, db)
     index_key = rkey["indices"]["#{type_name}Id".underscore][id]
@@ -81,8 +90,16 @@ class Rubatd::RedisAccessors::Base
     key["all"].sadd(id)
   end
 
+  def remove_id(id)
+    key["all"].srem(id)
+  end
+
   def store_attributes(id, attributes)
     key[id].hmset(*attributes.to_a)
+  end
+
+  def remove_attributes(id)
+    key[id].del
   end
 
   def read_attributes(id)

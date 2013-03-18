@@ -38,6 +38,10 @@ module Rubatd
       @_persisted_attributes = persisted_attributes
     end
 
+    def not_persisted!
+      @_persisted_attributes = nil
+    end
+
     def persisted_attributes
       @_persisted_attributes
     end

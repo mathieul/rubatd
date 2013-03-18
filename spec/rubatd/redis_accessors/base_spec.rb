@@ -82,6 +82,26 @@ describe RedisAccessors::Base do
     end
   end
 
+  context "#remove: remove a model from redis" do
+    let(:model) { Movie.new("title" => "Goldfinger", "number" => "007") }
+    before(:each) { movie_accessor.save(model) }
+
+    it "removes the model id to the list of all model ids" do
+      movie_accessor.remove(model)
+      expect(redis.smembers("Movie:all")).to eq([])
+    end
+
+    it "removes the model attributes" do
+      movie_accessor.remove(model)
+      expect(redis.hgetall("Movie:1")).to eq({})
+    end
+
+    it "sets the model as not persisted" do
+      movie_accessor.remove(model)
+      expect(model).to_not be_persisted
+    end
+  end
+
   context "model references" do
     let(:actor_accessor) { RedisAccessors::Actor.new(redis) }
     let(:moonraker) { Movie.new("title" => "Moonraker").tap { |m| m.id = "007" } }
@@ -102,6 +122,14 @@ describe RedisAccessors::Base do
       actor_accessor.save(moore)
       moore.movie = nil
       actor_accessor.save(moore)
+      expect(redis.smembers("Actor:indices:movie_id:007")).to eq([])
+    end
+
+    it "cleans-up references when removing the model" do
+      movie_accessor.save(moonraker)
+      moore.movie = moonraker
+      actor_accessor.save(moore)
+      actor_accessor.remove(moore)
       expect(redis.smembers("Actor:indices:movie_id:007")).to eq([])
     end
 
