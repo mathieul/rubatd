@@ -31,6 +31,13 @@ describe DataStore do
     store.save(model)
   end
 
+  it "delegates #delete to the appropriate redis accessor" do
+    model = DataStoreHelpers::Singer.new
+    Rubatd::RedisAccessors::Singer.any_instance.should_receive(:delete).with(model)
+
+    store.delete(model)
+  end
+
   it "delegates #get(:model, id) to the appropriate redis accessor" do
     Rubatd::RedisAccessors::Singer.any_instance
       .should_receive(:get).with("42").and_return(:found)

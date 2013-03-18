@@ -13,5 +13,8 @@ feature "Provisioning objects" do
     mathieu = store.get(:teammate, id: teammate.id)
     referrers = store.get(the_advisors, referrers: :teammate)
     expect(referrers.map(&:name)).to eq([mathieu.name])
+
+    store.delete(mathieu)
+    expect { store.get(:teammate, id: mathieu.id) }.to raise_error(ModelNotFound)
   end
 end

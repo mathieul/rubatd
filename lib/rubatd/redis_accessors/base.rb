@@ -52,7 +52,7 @@ class Rubatd::RedisAccessors::Base
     model
   end
 
-  def remove(model)
+  def delete(model)
     db.multi do
       cleanup_references(model)
       remove_attributes(model.id)

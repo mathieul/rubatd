@@ -11,6 +11,10 @@ class Rubatd::DataStore
     accessor(model.type_name).save(model)
   end
 
+  def delete(model)
+    accessor(model.type_name).delete(model)
+  end
+
   def get(subject, id: nil, referrers: nil)
     case subject
     when String, Symbol
