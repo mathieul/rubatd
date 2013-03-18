@@ -21,7 +21,8 @@ module Rubatd
     def attributes
       names = instance_variables.reject { |name| name == :@errors || name[1] == "_" }
       names.each_with_object({}) do |name, attributes|
-        attributes[name[1..-1]] = instance_variable_get(name)
+        value = instance_variable_get(name)
+        attributes[name[1..-1]] = value unless value.nil?
       end
     end
 
@@ -30,11 +31,15 @@ module Rubatd
     end
 
     def persisted?
-      !!@_persisted
+      !@_persisted_attributes.nil?
     end
 
-    def persisted!
-      @_persisted = true
+    def persisted!(persisted_attributes)
+      @_persisted_attributes = persisted_attributes
+    end
+
+    def persisted_attributes
+      @_persisted_attributes
     end
   end
 end

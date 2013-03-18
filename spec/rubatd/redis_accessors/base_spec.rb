@@ -105,7 +105,7 @@ describe RedisAccessors::Base do
       expect(redis.smembers("Actor:indices:movie_id:007")).to eq([])
     end
 
-    it "also load a model references with #get", wip: true do
+    it "also load a model references with #get" do
       movie_accessor.save(moonraker)
       moore.movie = moonraker
       actor_accessor.save(moore)

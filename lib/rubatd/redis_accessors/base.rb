@@ -27,12 +27,14 @@ class Rubatd::RedisAccessors::Base
   def save(model)
     assert_saveable!(model)
     model.id ||= next_id
+    attributes = model_attributes(model)
     db.multi do
       push_id(model.id)
-      store_attributes(model.id, model_attributes(model))
+      store_attributes(model.id, attributes)
+      cleanup_references(model)
       index_references(model)
     end
-    model.persisted!
+    model.persisted!(attributes)
     model
   end
 
@@ -45,7 +47,9 @@ class Rubatd::RedisAccessors::Base
       accessor = RedisAccessors.for(db, name.camelize)
       attributes[name] = accessor.get(ref_id)
     end
-    klass.new(attributes.merge("id" => id))
+    model = klass.new(attributes.merge("id" => id))
+    model.persisted!(attributes)
+    model
   end
 
   def referrers(referrer_type, id)
@@ -94,12 +98,24 @@ class Rubatd::RedisAccessors::Base
     end
   end
 
+  def cleanup_references(model)
+    return unless model.persisted?
+    each_reference do |name|
+      persisted_id = model.persisted_attributes["#{name}_id"]
+      index_for(name, persisted_id).srem(model.id)
+    end
+  end
+
   def index_references(model)
     each_reference do |name|
       if (referee = model.send(name))
-        key["indices"]["#{name}_id"][referee.id].sadd(model.id)
+        index_for(name, referee.id).sadd(model.id)
       end
     end
+  end
+
+  def index_for(name, id)
+    key["indices"]["#{name}_id"][id]
   end
 
   def assert_saveable!(model)
