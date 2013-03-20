@@ -13,9 +13,7 @@ describe Skill do
     end
 
     it "is not valid without a persisted team" do
-      teammate = create(:teammate)
-      queue = create(:queue, team: teammate.team)
-      skill = build(:skill, team: nil, teammate: teammate, queue: queue)
+      skill = build(:skill, team: nil)
       expect(skill).not_to be_valid
       expect(skill.errors[:team]).to eq([:not_present, :not_a_team])
       skill.team = build(:team)
