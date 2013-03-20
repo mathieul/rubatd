@@ -20,7 +20,7 @@ describe Teammate do
     expect(teammate.errors).to eq(team: [:not_a_team])
   end
 
-  it "is not valid if its team is not persisted" do
+  it "is not valid if its team is not valid" do
     teammate = build(:teammate, team: build(:team))
     expect(teammate).not_to be_valid
   end

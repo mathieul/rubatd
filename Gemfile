@@ -1,9 +1,10 @@
 source "https://rubygems.org"
 
-gem "celluloid"
-gem "redis"
-gem "nest"
-gem "scrivener"
+gem "celluloid", "~> 0.13.0"
+gem "redis",     "~> 3.0.3"
+gem "nest",      "~> 1.1.2"
+gem "scrivener", "~> 0.0.3"
+gem "workflow",  "~> 1.0.0"
 
 group :development do
   gem "rspec"
