@@ -7,3 +7,4 @@ end
 require "rubatd/models/model"
 require "rubatd/models/team"
 require "rubatd/models/teammate"
+require "rubatd/models/queue"

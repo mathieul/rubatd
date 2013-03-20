@@ -9,3 +9,4 @@ end
 require "rubatd/redis_accessors/base"
 require "rubatd/redis_accessors/team"
 require "rubatd/redis_accessors/teammate"
+require "rubatd/redis_accessors/queue"

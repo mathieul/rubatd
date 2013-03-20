@@ -15,6 +15,10 @@ FactoryGirl.define do
     team
   end
 
+  factory :queue, class: Rubatd::Queue do
+    name "valid queue"
+    team
+  end
 
   def store
     @store ||= Rubatd::DataStore.new(:redis, Redis, redis_config)
