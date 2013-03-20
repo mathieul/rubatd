@@ -20,6 +20,11 @@ FactoryGirl.define do
     team
   end
 
+  factory :task, class: Rubatd::Task do
+    title "valid task"
+    team
+  end
+
   def store
     @store ||= Rubatd::DataStore.new(:redis, Redis, redis_config)
   end
