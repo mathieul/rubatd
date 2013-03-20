@@ -25,6 +25,11 @@ FactoryGirl.define do
     team
   end
 
+  factory :skill, class: Rubatd::Skill do
+    name "valid skill"
+    team
+  end
+
   def store
     @store ||= Rubatd::DataStore.new(:redis, Redis, redis_config)
   end
