@@ -1,12 +1,18 @@
 module Rubatd
   class Skill < Model
-    attr_accessor :name, :team
+    attr_accessor :name, :team, :teammate, :queue
 
     def validate
       assert_present :name
-      assert_present :team
-      assert team.is_a?(Team), [:team, :not_a_team]
-      assert team.persisted?, [:team, :not_persisted] if team.respond_to?(:persisted?)
+      %i[team teammate queue].each do |name|
+        assert_present name
+        relation = send(name)
+        expected_klass = Rubatd.const_get(name.to_s.capitalize)
+        assert relation.is_a?(expected_klass), [name, :"not_a_#{name}"]
+        if relation.respond_to?(:persisted?)
+          assert relation.persisted?, [name, :not_persisted]
+        end
+      end
     end
   end
 end

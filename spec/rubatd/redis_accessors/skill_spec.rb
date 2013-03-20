@@ -20,7 +20,10 @@ describe RedisAccessors::Skill do
   it "#save persists the team id" do
     accessor.save(skill)
     expect(redis.hgetall("Skill:1")).to eq(
-      "name" => "Sales", "team_id" => "1"
+      "name"        => "Sales",
+      "team_id"     => "1",
+      "queue_id"    => "1",
+      "teammate_id" => "1"
     )
   end
 end

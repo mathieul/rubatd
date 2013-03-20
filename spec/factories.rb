@@ -28,6 +28,8 @@ FactoryGirl.define do
   factory :skill, class: Rubatd::Skill do
     name "valid skill"
     team
+    queue    { create(:queue, team: team) }
+    teammate { create(:teammate, team: team) }
   end
 
   def store
