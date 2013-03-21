@@ -12,15 +12,28 @@ describe RedisAccessors::Task do
     expect(accessor).to be_an(RedisAccessors::Base)
   end
 
-  it "#save raises an error if team is not persisted" do
-    task.team = build(:team)
-    expect { accessor.save(task) }.to raise_error(ModelInvalid)
-  end
+  context "#save" do
+    it "raises an error if team is not persisted" do
+      task.team = build(:team)
+      expect { accessor.save(task) }.to raise_error(ModelInvalid)
+    end
 
-  it "#save persists the team id" do
-    accessor.save(task)
-    expect(redis.hgetall("Task:1")).to eq(
-      "title" => "Buy milk", "team_id" => "1"
-    )
+    it "persists the team id" do
+      task.team = create(:team, id: "007")
+      accessor.save(task)
+      expect(redis.hgetall("Task:1")["team_id"]).to eq("007")
+    end
+
+    it "persists the queue id" do
+      task.queue = create(:queue, id: "123")
+      accessor.save(task)
+      expect(redis.hgetall("Task:1")["queue_id"]).to eq("123")
+    end
+
+    it "persists the teammate id" do
+      task.teammate = create(:teammate, id: "tm4")
+      accessor.save(task)
+      expect(redis.hgetall("Task:1")["teammate_id"]).to eq("tm4")
+    end
   end
 end

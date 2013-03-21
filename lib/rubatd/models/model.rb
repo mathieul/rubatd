@@ -8,6 +8,11 @@ module Rubatd
       attributes.each do |name, value|
         send("#{name}=", value) if respond_to?(name)
       end
+      post_initialize(attributes)
+    end
+
+    def post_initialize(attributes)
+      # can be overriden by children
     end
 
     def id
