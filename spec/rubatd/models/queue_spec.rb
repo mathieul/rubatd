@@ -21,4 +21,31 @@ describe Queue do
       expect(queue.errors).to eq(team: [:not_persisted])
     end
   end
+
+  context "queueing tasks" do
+    let(:task) { create(:task) }
+    let(:queue) { create(:queue) }
+
+    it "can enqueue a task with #enqueue" do
+      queue.enqueue(task)
+      expect(queue.enqueued_tasks).to eq([task])
+    end
+
+    it "can dequeue a task with #dequeue" do
+      queue.dequeue(task)
+      expect(queue.dequeued_tasks).to eq([task])
+    end
+
+    it "removes enqueued tasks if necessary with #dequeue" do
+      queue.enqueue(task)
+      queue.dequeue(task)
+      expect(queue.enqueued_tasks).to be_empty
+    end
+
+    it "removes dequeued tasks if necessary with #enqueue" do
+      queue.dequeue(task)
+      queue.enqueue(task)
+      expect(queue.dequeued_tasks).to be_empty
+    end
+  end
 end
