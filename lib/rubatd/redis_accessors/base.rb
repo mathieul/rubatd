@@ -4,11 +4,16 @@ class Rubatd::RedisAccessors::Base
   attr_reader :db
 
   class << self
-    attr_reader :reference_names
+    attr_reader :reference_names, :embedded_keys
 
     def reference(referee_type)
       @reference_names ||= []
       @reference_names << referee_type.underscore
+    end
+
+    def embedded_key(name, &block)
+      @embedded_keys ||= []
+      @embedded_keys << [name, block]
     end
   end
 
@@ -33,6 +38,7 @@ class Rubatd::RedisAccessors::Base
       store_attributes(model.id, attributes)
       cleanup_references(model)
       index_references(model)
+      update_embedded_keys(model)
     end
     model.persisted!(attributes)
     model
@@ -57,6 +63,7 @@ class Rubatd::RedisAccessors::Base
       cleanup_references(model)
       remove_attributes(model.id)
       remove_id(model.id)
+      remove_embedded_keys(model.id)
     end
     model.not_persisted!
   end
@@ -133,6 +140,18 @@ class Rubatd::RedisAccessors::Base
 
   def index_for(name, id)
     key["indices"]["#{name}_id"][id]
+  end
+
+  def update_embedded_keys(model)
+    Array(self.class.embedded_keys).each do |name, block|
+      block.call(model, key[model.id][name])
+    end
+  end
+
+  def remove_embedded_keys(id)
+    Array(self.class.embedded_keys).each do |name, block|
+      key[id][name].del
+    end
   end
 
   def assert_saveable!(model)
