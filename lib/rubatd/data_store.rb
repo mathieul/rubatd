@@ -7,15 +7,17 @@ class Rubatd::DataStore
     @accessors = {}
   end
 
-  def save(model)
-    accessor(model.type_name).save(model)
+  def save(*models)
+    models.each do |model|
+      accessor(model.type_name).save(model)
+    end
   end
 
   def delete(model)
     accessor(model.type_name).delete(model)
   end
 
-  def get(subject, id: nil, referrers: nil)
+  def get(subject, id: nil, referrers: nil, embedded: nil)
     case subject
     when String, Symbol
       model_type = subject.to_s.camelize
