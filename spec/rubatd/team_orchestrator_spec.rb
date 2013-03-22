@@ -14,4 +14,14 @@ describe TeamOrchestrator do
     store.should_receive(:save).with(queue, task)
     orchestrator.enqueue_task(queue, task)
   end
+
+  it "dequeues a task with #dequeue_task"
+
+  it "makes a teammate available with #make_available"
+
+  it "makes a teammate accept a task with #accept_task"
+
+  it "makes a teammate reject a task with #reject_task"
+
+  it "makes a teammate finish a task with #finish_task"
 end
