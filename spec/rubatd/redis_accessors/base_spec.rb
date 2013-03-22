@@ -3,9 +3,14 @@ require "spec_helper"
 include Rubatd
 
 class Movie < Model
-  attr_accessor :title, :number
+  attr_accessor :title, :number, :info
+  reserve_attributes :info
 end
-Rubatd::RedisAccessors::Movie = Class.new(RedisAccessors::Base)
+class Rubatd::RedisAccessors::Movie < RedisAccessors::Base
+  embedded_key :info do |model, key|
+    key.set(Marshal.dump(model.info)) if model.info
+  end
+end
 
 class Actor < Model
   attr_accessor :name, :movie
@@ -52,6 +57,13 @@ describe RedisAccessors::Base do
     it "sets the model as persisted" do
       model.should_receive(:persisted!)
       movie_accessor.save(model)
+    end
+
+    it "can save more than 1 model" do
+      model2 = Movie.new("title" => "GoldenEye")
+      movie_accessor.save(model, model2)
+      expect(model.id).to eq("1")
+      expect(model2.id).to eq("2")
     end
   end
 
@@ -151,6 +163,16 @@ describe RedisAccessors::Base do
     it "raises an error if a referee is not persisted when saving" do
       moore.movie = moonraker
       expect { actor_accessor.save(moore) }.to raise_error(ModelNotSaved)
+    end
+  end
+
+  context "embedded keys" do
+    it "saves embedded keys when saving the model" do
+      movie = Movie.new("id" => "10", "title" => "The Spy Who Loved Me")
+      movie.info = {year: 1977}
+      movie_accessor.save(movie)
+      info = Marshal.load(redis.get("Movie:10:info"))
+      expect(info).to eq(year: 1977)
     end
   end
 end
