@@ -26,7 +26,7 @@ describe RedisAccessors::Queue do
     it "adds the tasks enqueued to the sorted set of tasks" do
       queue.enqueue(task = create(:task, id: "t123"))
       accessor.save(queue)
-      expect(redis.zrange("Queue:1:tasks", 0, -1)).to eq(["t123"])
+      expect(redis.zrange("Queue:1:task_ids", 0, -1)).to eq(["t123"])
     end
 
     it "removes the tasks dequeued from the sorted set of tasks" do
@@ -34,7 +34,7 @@ describe RedisAccessors::Queue do
       accessor.save(queue)
       queue.dequeue(task)
       accessor.save(queue)
-      expect(redis.zrange("Queue:1:tasks", 0, -1)).to eq([])
+      expect(redis.zrange("Queue:1:task_ids", 0, -1)).to eq([])
     end
   end
 
@@ -43,7 +43,7 @@ describe RedisAccessors::Queue do
       queue.enqueue(task = create(:task, id: "t123"))
       accessor.save(queue)
       accessor.delete(queue)
-      expect(redis.zrange("Queue:1:tasks", 0, -1)).to eq([])
+      expect(redis.zrange("Queue:1:task_ids", 0, -1)).to eq([])
     end
   end
 end

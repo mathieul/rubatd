@@ -27,7 +27,8 @@ feature "Provisioning objects" do
     orchestrator = Rubatd::TeamOrchestrator.new(store)
     orchestrator.enqueue_task(queue, do_homework)
     orchestrator.enqueue_task(queue, buy_milk)
-    tasks = store.get(queue, embedded: :tasks)
-    expect(tasks.map(&:title)).to eq(["Buy the milk", "Do my homework"])
+    next_id = store.get(queue, embedded: :tasks) { |tasks| tasks.next_id }
+    next_task = store.get(:task, next_id)
+    expect(next_task.title).to eq("Buy the milk")
   end
 end
