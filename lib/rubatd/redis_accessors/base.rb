@@ -7,14 +7,15 @@ module Rubatd
     class << self
       attr_reader :reference_names, :embedded_keys
 
-      def reference(referee_type)
+      def references(referee_type)
         @reference_names ||= []
-        @reference_names << referee_type.underscore
+        @reference_names << referee_type.to_s.underscore
       end
 
-      def embedded_key(name, &block)
+      def embeds(name, &block)
         @embedded_keys ||= []
-        @embedded_keys << [name, block]
+        key_name = name.to_s.singularize.foreign_key.pluralize
+        @embedded_keys << [key_name, block]
       end
     end
 

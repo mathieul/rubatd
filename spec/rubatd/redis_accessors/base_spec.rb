@@ -3,12 +3,13 @@ require "spec_helper"
 include Rubatd
 
 class Movie < Model
-  attr_accessor :title, :number, :info
-  reserve_attributes :info
+  attr_accessor :title, :number, :actor_ids
+  reserve_attributes :actor_ids
 end
 class Rubatd::RedisAccessors::Movie < RedisAccessors::Base
-  embedded_key :info do |model, key|
-    key.set(Marshal.dump(model.info)) if model.info
+  embeds :actors do |model, key|
+    Array(model.actor_ids).each { |id| key.sadd(id) }
+    model.actor_ids = nil
   end
 end
 
@@ -16,7 +17,7 @@ class Actor < Model
   attr_accessor :name, :movie
 end
 class Rubatd::RedisAccessors::Actor < RedisAccessors::Base
-  reference "Movie"
+  references :movie
 end
 
 describe RedisAccessors::Base do
@@ -117,9 +118,7 @@ describe RedisAccessors::Base do
   context "model references" do
     let(:actor_accessor) { RedisAccessors::Actor.new(redis) }
     let(:moonraker) { Movie.new("title" => "Moonraker").tap { |m| m.id = "007" } }
-    let(:moore) do
-      Actor.new("name" => "Roger Moore").tap { |moore| moore.id = "3" }
-    end
+    let(:moore)     { Actor.new("name" => "Roger Moore", "id" => "3") }
 
     it "indexes its references when saved" do
       movie_accessor.save(moonraker)
@@ -167,12 +166,20 @@ describe RedisAccessors::Base do
   end
 
   context "embedded keys" do
+    let(:movie) { Movie.new("id" => "10", "title" => "The Spy Who Loved Me") }
     it "saves embedded keys when saving the model" do
-      movie = Movie.new("id" => "10", "title" => "The Spy Who Loved Me")
-      movie.info = {year: 1977}
+      # moore = Actor.new("name" => "Roger Moore", "id" => "10")
+      # kiel = Actor.new("name" => "Richard Kiel", "id" => "2")
+      movie.actor_ids = ["2", "10"]
       movie_accessor.save(movie)
-      info = Marshal.load(redis.get("Movie:10:info"))
-      expect(info).to eq(year: 1977)
+      expect(redis.smembers("Movie:10:actor_ids").sort).to eq(["10", "2"])
+    end
+
+    it "deletes embedded keys when deleting the model" do
+      movie.actor_ids = ["2", "10"]
+      movie_accessor.save(movie)
+      movie_accessor.delete(movie)
+      expect(redis.smembers("Movie:10:actor_ids")).to be_empty
     end
   end
 end

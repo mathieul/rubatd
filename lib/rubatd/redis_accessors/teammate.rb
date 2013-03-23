@@ -1,7 +1,7 @@
 module Rubatd
   module RedisAccessors
     class Teammate < Base
-      reference "Team"
+      references "Team"
     end
   end
 end

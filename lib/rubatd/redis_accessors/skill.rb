@@ -1,9 +1,9 @@
 module Rubatd
   module RedisAccessors
     class Skill < Base
-      reference "Team"
-      reference "Teammate"
-      reference "Queue"
+      references "Team"
+      references "Teammate"
+      references "Queue"
     end
   end
 end
