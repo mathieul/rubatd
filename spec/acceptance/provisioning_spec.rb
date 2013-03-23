@@ -27,8 +27,14 @@ feature "Provisioning objects" do
     orchestrator = Rubatd::TeamOrchestrator.new(store)
     orchestrator.enqueue_task(queue, do_homework)
     orchestrator.enqueue_task(queue, buy_milk)
+
+    num_tasks = store.get(queue, embedded: :tasks) { |tasks| tasks.count }
+    expect(num_tasks).to eq(2)
     next_id = store.get(queue, embedded: :tasks) { |tasks| tasks.next_id }
-    next_task = store.get(:task, next_id)
-    expect(next_task.title).to eq("Buy the milk")
+    expect(next_id).to eq(buy_milk.id)
+
+    # next_id = store.get(queue, embedded: :tasks) { |tasks| tasks.next_id }
+    # next_id = store.embedded(queue, :tasks) { |tasks| tasks.next_id }
+    # next_id = store.embedded(queue, :tasks) { next_id }
   end
 end
