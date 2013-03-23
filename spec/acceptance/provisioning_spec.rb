@@ -28,13 +28,36 @@ feature "Provisioning objects" do
     orchestrator.enqueue_task(queue, do_homework)
     orchestrator.enqueue_task(queue, buy_milk)
 
-    num_tasks = store.get(queue, embedded: :tasks) { |tasks| tasks.count }
-    expect(num_tasks).to eq(2)
-    next_id = store.get(queue, embedded: :tasks) { |tasks| tasks.next_id }
-    expect(next_id).to eq(buy_milk.id)
-
+    # num_tasks = store.get(queue, embedded: :tasks) { |tasks| tasks.count }
+    # expect(num_tasks).to eq(2)
     # next_id = store.get(queue, embedded: :tasks) { |tasks| tasks.next_id }
-    # next_id = store.embedded(queue, :tasks) { |tasks| tasks.next_id }
-    # next_id = store.embedded(queue, :tasks) { next_id }
+    # expect(next_id).to eq(buy_milk.id)
+
+    # class Queue
+    #   embeds :tasks do
+    #     save { |model, key| ... key.command(model.content) ... }
+    #     define(:count) { |key| key.zcard }
+    #     define(:next_id) { |key| key.command(...read next id...) }
+    #   end
+    # end
+    #
+    # class Teammate
+    # end
+    #
+    # class Skill
+    #   references :teammate do
+    #     save { |model, key| ...TODO if makes sense... }
+    #   end
+    #   references :queue
+    # end
+
+    # store.save(queue, task)
+    # store.get(:queue, queue_id) # any reference is instantiated?
+    # store.delete(task)
+
+    # store.referenced_by(queue).skills.all
+    # store.embedded_in(queue).tasks.count
+    # store.embedded_in(queue).tasks.next_id
+
   end
 end
