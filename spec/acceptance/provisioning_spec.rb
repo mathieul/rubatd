@@ -34,9 +34,9 @@ feature "Provisioning objects" do
     # expect(next_id).to eq(buy_milk.id)
 
     # class Queue
-    #   embeds :tasks do
-    #     save { |model, key| ... key.command(model.content) ... }
-    #     define(:count) { |key| key.zcard }
+    #   embeds :tasks, score: ->(task) { task.created_ts } do
+    #     # key = "Queue:123:task_ids"
+    #     define(:count)   { |key| key.zcard }
     #     define(:next_id) { |key| key.command(...read next id...) }
     #   end
     # end
@@ -46,7 +46,12 @@ feature "Provisioning objects" do
     #
     # class Skill
     #   references :teammate do
-    #     save { |model, key| ...TODO if makes sense... }
+    #     # key = "Skill:indices:teammate_id"
+    #     save { |model, key|
+    #       # "#{key}:old123": srem model.id
+    #       # "#{key}:new456": sadd model.id
+    #     }
+    #     del { |model, key| # "#{key}:id789": srem model.id }
     #   end
     #   references :queue
     # end
@@ -56,6 +61,7 @@ feature "Provisioning objects" do
     # store.delete(task)
 
     # store.referenced_by(queue).skills.all
+    # store.embedded_in(queue).tasks << task
     # store.embedded_in(queue).tasks.count
     # store.embedded_in(queue).tasks.next_id
 
