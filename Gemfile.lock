@@ -1,12 +1,27 @@
+GIT
+  remote: git://github.com/mathieul/redistent.git
+  revision: df125bc82dfcda939d015225c0b21dc7d9ed16be
+  specs:
+    redistent (0.0.1)
+      bson_ext (~> 1.8.4)
+      inflecto (~> 0.0.2)
+      nest (~> 1.1.2)
+      redis (~> 3.0.3)
+
 GEM
   remote: https://rubygems.org/
   specs:
     activesupport (3.2.13)
       i18n (= 0.6.1)
       multi_json (~> 1.0)
+    backports (2.6.7)
+    bson (1.8.4)
+    bson_ext (1.8.4)
+      bson (~> 1.8.4)
     celluloid (0.13.0)
       timers (>= 1.0.0)
     coderay (1.0.9)
+    descendants_tracker (0.0.1)
     diff-lcs (1.2.1)
     factory_girl (4.2.0)
       activesupport (>= 3.0.0)
@@ -20,6 +35,7 @@ GEM
       guard (>= 1.1)
       rspec (~> 2.11)
     i18n (0.6.1)
+    inflecto (0.0.2)
     listen (0.7.3)
     lumberjack (1.0.3)
     method_source (0.8.1)
@@ -48,6 +64,9 @@ GEM
     thor (0.17.0)
     timecop (0.6.1)
     timers (1.1.0)
+    virtus (0.5.4)
+      backports (~> 2.6.1)
+      descendants_tracker (~> 0.0.1)
     workflow (1.0.0)
 
 PLATFORMS
@@ -57,11 +76,12 @@ DEPENDENCIES
   celluloid (~> 0.13.0)
   factory_girl
   guard-rspec
-  nest (~> 1.1.2)
+  inflecto (~> 0.0.2)
   pry-nav
   rb-fsevent (~> 0.9)
-  redis (~> 3.0.3)
+  redistent!
   rspec
   scrivener (~> 0.0.3)
   timecop
+  virtus (~> 0.5.4)
   workflow (~> 1.0.0)

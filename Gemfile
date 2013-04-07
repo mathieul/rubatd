@@ -1,10 +1,11 @@
 source "https://rubygems.org"
 
-gem "celluloid", "~> 0.13.0"
-gem "redis",     "~> 3.0.3"
-gem "nest",      "~> 1.1.2"
-gem "scrivener", "~> 0.0.3"
-gem "workflow",  "~> 1.0.0"
+gem "celluloid",  "~> 0.13.0"
+gem "scrivener",  "~> 0.0.3"
+gem "workflow",   "~> 1.0.0"
+gem "virtus",     "~> 0.5.4"
+gem "inflecto",   "~> 0.0.2"
+gem "redistent",  github: "mathieul/redistent"
 
 group :development do
   gem "rspec"
