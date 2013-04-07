@@ -12,13 +12,10 @@ describe Teammate do
       expect(build(:teammate, name: nil)).not_to be_valid
     end
 
-    it "is not valid without a persisted team" do
+    it "is not valid without a team" do
       teammate = build(:teammate, team: nil)
       expect(teammate).not_to be_valid
       expect(teammate.errors).to eq(team: [:not_present, :not_a_team])
-      teammate.team = build(:team)
-      expect(teammate).not_to be_valid
-      expect(teammate.errors).to eq(team: [:not_persisted])
     end
   end
 

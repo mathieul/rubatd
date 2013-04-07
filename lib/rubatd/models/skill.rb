@@ -1,6 +1,8 @@
 module Rubatd
   class Skill < Model
-    attr_accessor :name, :team, :teammate, :queue
+    attribute :level,      Fixnum
+    attribute :task_queue, TaskQueue
+    attribute :teammate,   Teammate
 
     def validate
       assert_present :name
@@ -9,9 +11,6 @@ module Rubatd
         relation = send(name)
         expected_klass = Rubatd.const_get(name.to_s.capitalize)
         assert relation.is_a?(expected_klass), [name, :"not_a_#{name}"]
-        if relation.respond_to?(:persisted?)
-          assert relation.persisted?, [name, :not_persisted]
-        end
       end
     end
   end

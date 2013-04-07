@@ -1,43 +1,30 @@
+require "redistent"
+
 class Rubatd::DataStore
-  attr_reader :db, :type
+  include Redistent::Accessor
 
-  def initialize(type, db_adapter_class, config)
-    @type = type
-    @db = db_adapter_class.new(config)
-    @accessors = {}
+  before_write :assert_valid!
+
+  model :team
+
+  model :teammate do
+    references :team
+    collection :skills
+    collection :task_queues, via: :skills
   end
 
-  def save(*models)
-    models.each do |model|
-      accessor(model.type_name).save(model)
-    end
+  model :task_queue do
+    collection :tasks, sort_by: :queued_at
+    collection :skills
+    collection :teammates, via: :skills
   end
 
-  def delete(model)
-    accessor(model.type_name).delete(model)
+  model :skill do
+    references :teammate
+    references :task_queue
   end
 
-  def get(subject, id: nil, referrers: nil, embedded: nil)
-    case subject
-    when String, Symbol
-      model_type = subject.to_s.camelize
-      accessor(model_type).get(id)
-    else
-      model_type = referrers.to_s.camelize
-      fetch_referrers(subject, model_type)
-    end
-  end
-
-  private
-
-  def accessor(model_type)
-    @accessors[model_type] ||= begin
-      container = Rubatd.const_get(:"#{type.to_s.camelize}Accessors")
-      container.for(db, model_type)
-    end
-  end
-
-  def fetch_referrers(referee, model_type)
-    accessor(referee.type_name).referrers(model_type, referee.id)
+  model :task do
+    references :task_queue
   end
 end

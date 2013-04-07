@@ -5,24 +5,25 @@ feature "Provisioning objects" do
 
   scenario "Create team, teammates and queues" do
     the_advisors = Rubatd::Team.new(name: "Advisors")
-    store.save(the_advisors)
+    store.write(the_advisors)
     teammate = Rubatd::Teammate.new(name: "mathieu", team: the_advisors)
-    store.save(teammate)
+    store.write(teammate)
 
-    mathieu = store.get(:teammate, id: teammate.id)
-    referrers = store.get(the_advisors, referrers: :teammate)
-    expect(referrers.map(&:name)).to eq([mathieu.name])
+    mathieu = store.read(:teammate, teammate.uid)
+    referrers = store.collection(the_advisors, :teammates).all
+    expect(referrers.map(&:name)).to eq(["mathieu"])
 
-    store.delete(mathieu)
-    expect { store.get(:teammate, id: mathieu.id) }.to raise_error(Rubatd::ModelNotFound)
+    store.erase(mathieu)
+    expect { store.read(:teammate, mathieu.uid) }.to raise_error(Redistent::ModelNotFound)
   end
 
   scenario "Retrieve tasks queued" do
-    store.save(team = Rubatd::Team.new(name: "Ze Team"))
+    pending
+    store.write(team = Rubatd::Team.new(name: "Ze Team"))
 
-    store.save(queue = Rubatd::Queue.new(name: "Ze Queue", team: team))
-    store.save(buy_milk = Rubatd::Task.new(title: "Buy the milk", team: team))
-    store.save(do_homework = Rubatd::Task.new(title: "Do my homework", team: team))
+    store.write(queue = Rubatd::Queue.new(name: "Ze Queue", team: team))
+    store.write(buy_milk = Rubatd::Task.new(title: "Buy the milk", team: team))
+    store.write(do_homework = Rubatd::Task.new(title: "Do my homework", team: team))
 
     orchestrator = Rubatd::TeamOrchestrator.new(store)
     orchestrator.enqueue_task(queue, do_homework)

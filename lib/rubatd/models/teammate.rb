@@ -4,7 +4,8 @@ module Rubatd
   class Teammate < Model
     include Workflow
 
-    attr_accessor :name, :team
+    attribute :name, String
+    attribute :team, Team
 
     workflow do
       state :signed_out do
@@ -21,7 +22,6 @@ module Rubatd
       assert_present :name
       assert_present :team
       assert team.is_a?(Team), [:team, :not_a_team]
-      assert team.persisted?, [:team, :not_persisted] if team.respond_to?(:persisted?)
     end
   end
 end

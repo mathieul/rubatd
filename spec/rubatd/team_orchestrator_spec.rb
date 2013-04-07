@@ -11,7 +11,7 @@ describe TeamOrchestrator do
   it "enqueues a task with #enqueue_task" do
     task.should_receive(:queue=).with(queue)
     queue.should_receive(:enqueue).with(task)
-    store.should_receive(:save).with(queue, task)
+    store.should_receive(:write).with(queue, task)
     orchestrator.enqueue_task(queue, task)
   end
 

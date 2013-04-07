@@ -1,10 +1,10 @@
 store = begin
   config = GlobalConfigHelpers.instance_method(:redis_config).bind(self).call
-  Rubatd::DataStore.new(:redis, Redis, config)
+  Rubatd::DataStore.new(config)
 end
 
 FactoryGirl.define do
-  to_create { |instance| store.save(instance) }
+  to_create { |instance| store.write(instance) }
 
   factory :team, class: Rubatd::Team do
     name "valid team"
@@ -15,8 +15,8 @@ FactoryGirl.define do
     team
   end
 
-  factory :queue, class: Rubatd::Queue do
-    name "valid queue"
+  factory :task_queue, class: Rubatd::TaskQueue do
+    name "valid task queue"
     team
   end
 
@@ -27,9 +27,9 @@ FactoryGirl.define do
 
   factory :skill, class: Rubatd::Skill do
     name "valid skill"
-    team     { shared_team }
-    queue    { create(:queue,    team: shared_team) }
-    teammate { create(:teammate, team: shared_team) }
+    team       { shared_team }
+    task_queue { create(:task_queue, team: shared_team) }
+    teammate   { create(:teammate,   team: shared_team) }
 
     ignore do
       shared_team { create(:team) }

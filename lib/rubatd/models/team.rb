@@ -1,6 +1,6 @@
 module Rubatd
   class Team < Model
-    attr_accessor :name
+    attribute :name, String
 
     def validate
       assert_present :name
