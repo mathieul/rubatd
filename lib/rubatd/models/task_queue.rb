@@ -9,9 +9,13 @@ module Rubatd
       assert team.is_a?(Team), [:team, :not_a_team]
     end
 
-    def add_task(task)
+    def enqueue(task)
       task.queued_at = Time.now
       task.task_queue = self
+    end
+
+    def dequeue(task)
+      task.task_queue = nil
     end
   end
 end

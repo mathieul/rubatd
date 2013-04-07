@@ -1,7 +1,7 @@
 require "acceptance_helper"
 
 feature "Provisioning objects" do
-  let(:store) { Rubatd::DataStore.new(:redis, Redis, redis_config) }
+  let(:store) { Rubatd::DataStore.new(redis_config) }
 
   scenario "Create team, teammates and queues" do
     the_advisors = Rubatd::Team.new(name: "Advisors")

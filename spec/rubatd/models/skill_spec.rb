@@ -25,9 +25,9 @@ describe Skill do
     end
 
     it "is not valid without a queue" do
-      skill = build(:skill, queue: nil)
+      skill = build(:skill, task_queue: nil)
       expect(skill).not_to be_valid
-      expect(skill.errors[:queue]).to eq([:not_present, :not_a_queue])
+      expect(skill.errors[:task_queue]).to eq([:not_present, :not_a_task_queue])
     end
   end
 end

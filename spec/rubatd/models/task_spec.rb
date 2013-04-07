@@ -21,7 +21,7 @@ describe Task do
 
     it "can reference a queue" do
       task = create(:task)
-      task.task_queue = queue = create(:queue)
+      task.task_queue = queue = create(:task_queue)
       expect(task.task_queue).to eq(queue)
     end
 

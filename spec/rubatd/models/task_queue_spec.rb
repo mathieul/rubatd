@@ -23,27 +23,15 @@ describe TaskQueue do
     let(:task) { create(:task) }
     let(:queue) { create(:task_queue) }
 
-    pending
     it "can enqueue a task with #enqueue" do
       queue.enqueue(task)
-      expect(queue.enqueued_tasks).to eq([task])
+      expect(task.task_queue).to eq(queue)
+      expect(task.queued_at).to be_within(0.01).of(Time.now)
     end
 
     it "can dequeue a task with #dequeue" do
       queue.dequeue(task)
-      expect(queue.dequeued_tasks).to eq([task])
-    end
-
-    it "removes enqueued tasks if necessary with #dequeue" do
-      queue.enqueue(task)
-      queue.dequeue(task)
-      expect(queue.enqueued_tasks).to be_empty
-    end
-
-    it "removes dequeued tasks if necessary with #enqueue" do
-      queue.dequeue(task)
-      queue.enqueue(task)
-      expect(queue.dequeued_tasks).to be_empty
+      expect(task.task_queue).to be_nil
     end
   end
 end
