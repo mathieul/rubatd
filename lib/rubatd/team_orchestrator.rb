@@ -7,8 +7,12 @@ module Rubatd
     end
 
     def enqueue_task(queue, task)
-      task.queue = queue
       queue.enqueue(task)
+      store.write(queue, task)
+    end
+
+    def dequeue_task(queue, task)
+      queue.dequeue(task)
       store.write(queue, task)
     end
   end

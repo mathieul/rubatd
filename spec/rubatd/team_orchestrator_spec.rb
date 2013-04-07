@@ -9,13 +9,16 @@ describe TeamOrchestrator do
   let(:orchestrator) { TeamOrchestrator.new(store) }
 
   it "enqueues a task with #enqueue_task" do
-    task.should_receive(:queue=).with(queue)
     queue.should_receive(:enqueue).with(task)
     store.should_receive(:write).with(queue, task)
     orchestrator.enqueue_task(queue, task)
   end
 
-  it "dequeues a task with #dequeue_task"
+  it "dequeues a task with #dequeue_task" do
+    queue.should_receive(:dequeue).with(task)
+    store.should_receive(:write).with(queue, task)
+    orchestrator.dequeue_task(queue, task)
+  end
 
   it "makes a teammate available with #make_available"
 

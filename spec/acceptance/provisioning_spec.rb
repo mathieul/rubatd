@@ -10,8 +10,8 @@ feature "Provisioning objects" do
     store.write(teammate)
 
     mathieu = store.read(:teammate, teammate.uid)
-    referrers = store.collection(the_advisors, :teammates).all
-    expect(referrers.map(&:name)).to eq(["mathieu"])
+    teammates = store.collection(the_advisors, :teammates).all
+    expect(teammates.map(&:name)).to eq(["mathieu"])
 
     store.erase(mathieu)
     expect { store.read(:teammate, mathieu.uid) }.to raise_error(Redistent::ModelNotFound)
