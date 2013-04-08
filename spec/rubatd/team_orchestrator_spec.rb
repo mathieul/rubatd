@@ -20,6 +20,15 @@ describe TeamOrchestrator do
     orchestrator.dequeue_task(queue, task)
   end
 
+  it "returns the next task to assign with #next_task" do
+    collection = double(:collection)
+    store.should_receive(:collection)
+      .with(queue, :tasks)
+      .and_return(collection)
+    collection.should_receive(:last).and_return(:next_task)
+    expect(orchestrator.next_task(queue)).to eq(:next_task)
+  end
+
   it "makes a teammate available with #make_available"
 
   it "makes a teammate accept a task with #accept_task"

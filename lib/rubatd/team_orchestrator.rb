@@ -15,5 +15,9 @@ module Rubatd
       queue.dequeue(task)
       store.write(queue, task)
     end
+
+    def next_task(queue)
+      store.collection(queue, :tasks).last
+    end
   end
 end
