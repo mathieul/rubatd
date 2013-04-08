@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/mathieul/redistent.git
-  revision: ede6accc5b524c73d32eeddd20182e54e6d80287
+  revision: 3f8c519ed0d4676832a08f0e338f7990d86ea3c7
   specs:
     redistent (0.0.1)
       bson_ext (~> 1.8.4)
