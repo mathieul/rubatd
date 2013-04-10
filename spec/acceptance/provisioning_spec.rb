@@ -25,7 +25,8 @@ feature "Provisioning objects" do
       do_homework = Rubatd::Task.new(title: "Do my homework", team: team)
     )
 
-    orchestrator = Rubatd::TeamOrchestrator.new(store)
+    distributor = Rubatd::TaskDistributor.new
+    orchestrator = Rubatd::TeamOrchestrator.new(store, distributor)
     orchestrator.enqueue_task(queue, do_homework)
     orchestrator.enqueue_task(queue, buy_milk)
 

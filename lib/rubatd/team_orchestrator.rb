@@ -1,9 +1,10 @@
 module Rubatd
   class TeamOrchestrator
-    attr_reader :store
+    attr_reader :store, :distributor
 
-    def initialize(store)
-      @store = store
+    def initialize(store, distributor)
+      @store       = store
+      @distributor = distributor
     end
 
     def enqueue_task(queue, task)
@@ -18,6 +19,12 @@ module Rubatd
 
     def next_task(queue)
       store.collection(queue, :tasks).last
+    end
+
+    def make_available(teammate)
+      return false unless teammate.get_ready!
+      distributor.teammate_available(teammate)
+      true
     end
   end
 end
